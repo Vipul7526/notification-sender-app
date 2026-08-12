@@ -18,6 +18,11 @@ const MAPPING = {
   "paperplane.fill": "send",
   "chevron.left.forwardslash.chevron.right": "code",
   "chevron.right": "chevron-right",
+  "bell.fill": "notifications",
+  "iphone": "phone-iphone",
+  "location.fill": "location-on",
+  "checkmark.circle.fill": "check-circle",
+  "gearshape.fill": "settings",
 } as IconMapping;
 
 /**

@@ -98,12 +98,17 @@ async function verifyIndiaLocation() {
 async function registerForPushNotifications() {
   if (Platform.OS === "web" || !Device.isDevice) return null;
 
-  await Notifications.setNotificationChannelAsync("default", {
-    name: "Notifications",
-    importance: Notifications.AndroidImportance.MAX,
-    vibrationPattern: [0, 250, 250, 250],
-    lightColor: "#25C7C9",
-  });
+  if (Platform.OS === "android") {
+    // Firebase is auto-initialized by the Android native build from
+    // android.googleServicesFile in app.config.ts. The channel and permission
+    // setup must complete before Expo asks Firebase Messaging for a token.
+    await Notifications.setNotificationChannelAsync("default", {
+      name: "Notifications",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: "#25C7C9",
+    });
+  }
 
   const existing = await Notifications.getPermissionsAsync();
   const finalStatus = existing.status === "granted"
@@ -112,9 +117,21 @@ async function registerForPushNotifications() {
   if (finalStatus !== "granted") return null;
 
   const projectId = Constants.expoConfig?.extra?.eas?.projectId ?? Constants.easConfig?.projectId;
-  if (!projectId) return null;
+  if (!projectId) {
+    throw new Error("Push notifications need an Expo project ID in the release build.");
+  }
 
-  return (await Notifications.getExpoPushTokenAsync({ projectId })).data;
+  try {
+    const token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
+    if (!token) throw new Error("Expo did not return a push token.");
+    return token;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (message.includes("Default FirebaseApp") || message.includes("FirebaseApp")) {
+      throw new Error("This APK was built without Firebase configuration. Rebuild it with google-services.json for com.app.notificationsenderapp.");
+    }
+    throw error;
+  }
 }
 
 function formatTime(value: string) {

@@ -64,6 +64,7 @@ const config: ExpoConfig = {
     edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
     package: env.androidPackage,
+    googleServicesFile: "./google-services.json",
     permissions: ["POST_NOTIFICATIONS", "ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"],
     intentFilters: [
       {
@@ -99,6 +100,7 @@ const config: ExpoConfig = {
         supportsPictureInPicture: true,
       },
     ],
+    "expo-notifications",
     [
       "expo-location",
       {

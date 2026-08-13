@@ -11,4 +11,4 @@
 - [x] Configure Expo Android googleServicesFile and native Firebase build settings
 - [x] Ensure Firebase initialization is handled before push-token requests
 - [x] Validate the Firebase configuration and save a rebuild-ready checkpoint
-- [ ] Create a public GitHub repository and upload the current notification sender project
+- [x] Create a public GitHub repository and upload the current notification sender project
